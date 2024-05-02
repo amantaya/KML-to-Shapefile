@@ -1,14 +1,21 @@
 import geopandas as gpd
+import fiona
+import glob
+import os.path
 
-gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+# list files in the directory that have an extension of .kml
+filenames: list = glob.glob(r"./KML/*.kml")
 
-# Read in the list of shapefiles in the directory
+fiona.drvsupport.supported_drivers['KML'] = 'rw'
 
+# loop through the files and convert them to shapefiles
+for file in filenames:
+    # Read the KML file into a GeoDataFrame
+    gdf = gpd.read_file(file, driver='KML')
 
-# Read the KML file into a GeoDataFrame
-kml_file = "example.kml"
-gdf = gpd.read_file(kml_file, driver='KML')
+    # Write the GeoDataFrame to a shapefile
+    basename: str = os.path.basename(file)
+    shp_file: str = f"./Shapefiles/{basename.replace('.kml', '.shp')}"
+    gdf.to_file(shp_file, driver='ESRI Shapefile')
 
-# Write the GeoDataFrame to a shapefile
-shp_file = "examplee.shp"
-gdf.to_file(shp_file, driver='ESRI Shapefile')
+    print(f"Converted {file} to {shp_file}")
