@@ -67,3 +67,9 @@ __pypackages__/
 
 # PyCharm Config
 .idea/
+
+# KML files
+KML/
+
+# Shapefiles
+Shapefiles/
